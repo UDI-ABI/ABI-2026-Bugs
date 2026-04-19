@@ -94,11 +94,16 @@ El proyecto sigue el patrón **MVC (Model-View-Controller)** de Laravel:
 
 ### Prerrequisitos
 
-- **PHP 8.1 o superior**
-- **Composer** - Gestor de dependencias PHP
-- **Node.js y npm** - Para assets del frontend
-- **MySQL 5.7 o superior**
-- **Apache/Nginx** - Servidor web
+Para ejecutar el proyecto en local, **usa XAMPP**. No instales PHP, MySQL ni Apache por separado para evitar conflictos.
+
+- **XAMPP**, con:
+  - **PHP 8.1 o superior**
+  - **MySQL o MariaDB**
+  - **Apache**
+- **Composer**, para instalar dependencias de PHP
+- **Node.js y npm**, para compilar los assets del frontend
+
+> **Importante:** este proyecto asume en Windows que XAMPP está instalado en `C:\xampp`. Si lo instalaste en otra ruta, debes ajustar los scripts o la variable PATH.
 
 ### Pasos de Instalación
 
