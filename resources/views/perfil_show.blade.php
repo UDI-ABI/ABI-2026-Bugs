@@ -6,9 +6,9 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-7 col-md-8">
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-header bg-primary text-white text-center py-3">
-                    <h4 class="m-0">{{ __('Perfil de Usuario') }}</h4>
+            <div class="card shadow-lg border border-secondary-subtle rounded-3">
+                <div class="card-header bg-primary text-white text-center border-0 py-3">
+                    <h4 class="m-0 text-white">{{ __('Perfil de Usuario') }}</h4>
                 </div>
 
                 <div class="card-body p-4">
@@ -22,38 +22,38 @@
                     <div class="row g-3">
 
                         <div class="col-12">
-                            <label class="form-label fw-bold text-primary">Documento de identidad</label>
-                            <div class="form-control bg-light">{{ $userCard }}</div>
+                            <label class="form-label fw-semibold text-body-secondary" for="perfil-readonly-document">{{ __('Documento de identidad') }}</label>
+                            <div id="perfil-readonly-document" class="perfil-readonly-field">{{ $userCard }}</div>
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-bold text-primary">Nombre de Usuario</label>
-                            <div class="form-control bg-light">{{ $displayName }}</div>
+                            <label class="form-label fw-semibold text-body-secondary" for="perfil-readonly-name">{{ __('Nombre de Usuario') }}</label>
+                            <div id="perfil-readonly-name" class="perfil-readonly-field">{{ $displayName }}</div>
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-bold text-primary">Correo Electrónico</label>
-                            <div class="form-control bg-light">{{ $userMail }}</div>
+                            <label class="form-label fw-semibold text-body-secondary" for="perfil-readonly-mail">{{ __('Correo Electrónico') }}</label>
+                            <div id="perfil-readonly-mail" class="perfil-readonly-field">{{ $userMail }}</div>
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-bold text-primary">Número telefónico</label>
-                            <div class="form-control bg-light">{{ $userPhone }}</div>
+                            <label class="form-label fw-semibold text-body-secondary" for="perfil-readonly-phone">{{ __('Número telefónico') }}</label>
+                            <div id="perfil-readonly-phone" class="perfil-readonly-field">{{ $userPhone }}</div>
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-bold text-primary">Rol</label>
-                            <div class="form-control bg-light">{{ $nameUserRole }}</div>
+                            <label class="form-label fw-semibold text-body-secondary" for="perfil-readonly-role">{{ __('Rol') }}</label>
+                            <div id="perfil-readonly-role" class="perfil-readonly-field">{{ $nameUserRole }}</div>
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-bold text-primary">Programa</label>
-                            <div class="form-control bg-light">{{ $userProgram }}</div>
+                            <label class="form-label fw-semibold text-body-secondary" for="perfil-readonly-program">{{ __('Programa') }}</label>
+                            <div id="perfil-readonly-program" class="perfil-readonly-field">{{ $userProgram }}</div>
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-bold text-primary">Ciudad</label>
-                            <div class="form-control bg-light">{{ $userCity }}</div>
+                            <label class="form-label fw-semibold text-body-secondary" for="perfil-readonly-city">{{ __('Ciudad') }}</label>
+                            <div id="perfil-readonly-city" class="perfil-readonly-field">{{ $userCity }}</div>
                         </div>
 
                     </div>

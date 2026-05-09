@@ -15,8 +15,8 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white text-center">{{ __('Perfil') }}</div>
+            <div class="card shadow-sm border border-secondary-subtle">
+                <div class="card-header bg-primary text-white text-center border-0">{{ __('Perfil') }}</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -32,7 +32,7 @@
 
                         <div class="form-group">
                             {{-- Label describing the purpose of '{{ __('Nombre de Usuario') }}'. --}}
-                            <label for="name">{{ __('Nombre de Usuario') }}</label>
+                            <label class="form-label fw-semibold text-body-secondary" for="name">{{ __('Nombre de Usuario') }}</label>
                             {{-- Input element used to capture the 'name' value. --}}
                             <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ auth()->user()->name }}" required autofocus>
                             @error('name')
@@ -44,7 +44,7 @@
 
                         <div class="form-group">
                             {{-- Label describing the purpose of '{{ __('Correo Electrónico') }}'. --}}
-                            <label for="email">{{ __('Correo Electrónico') }}</label>
+                            <label class="form-label fw-semibold text-body-secondary" for="email">{{ __('Correo Electrónico') }}</label>
                             {{-- Input element used to capture the 'email' value. --}}
                             <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ auth()->user()->email }}" required>
                             @error('email')
@@ -56,7 +56,7 @@
 
                         <div class="form-group">
                             {{-- Label describing the purpose of '{{ __('Nueva Contraseña') }}'. --}}
-                            <label for="password">{{ __('Nueva Contraseña') }}</label>
+                            <label class="form-label fw-semibold text-body-secondary" for="password">{{ __('Nueva Contraseña') }}</label>
                             {{-- Input element used to capture the 'password' value. --}}
                             <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password">
                             @error('password')
@@ -68,7 +68,7 @@
 
                         <div class="form-group">
                             {{-- Label describing the purpose of '{{ __('Confirmar Nueva Contraseña') }}'. --}}
-                            <label for="password-confirm">{{ __('Confirmar Nueva Contraseña') }}</label>
+                            <label class="form-label fw-semibold text-body-secondary" for="password-confirm">{{ __('Confirmar Nueva Contraseña') }}</label>
                             {{-- Input element used to capture the 'password_confirmation' value. --}}
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" autocomplete="new-password">
                         </div>
