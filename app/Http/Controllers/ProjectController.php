@@ -2087,16 +2087,8 @@ SQL;
 
         try {
             $professor->fill([
-                'name' => $validated['contact_first_name'],
-                'last_name' => $validated['contact_last_name'],
-                'mail' => $validated['contact_email'],
                 'phone' => $validated['contact_phone'],
             ])->save();
-
-            if ($professor->user && $professor->user->email !== $validated['contact_email']) {
-                $professor->user->email = $validated['contact_email'];
-                $professor->user->save();
-            }
 
             if ($project) {
                 $project->fill([
@@ -2291,16 +2283,8 @@ SQL;
 
         try {
             $student->fill([
-                'name' => $validated['student_first_name'],
-                'last_name' => $validated['student_last_name'],
-                'card_id' => $validated['student_card_id'],
                 'phone' => $validated['student_phone'],
             ])->save();
-
-            if ($student->user && $student->user->email !== $validated['student_email']) {
-                $student->user->email = $validated['student_email'];
-                $student->user->save();
-            }
 
             if ($project) {
                 $project->fill([

@@ -1,88 +1,119 @@
-{{--
-    View path: perfil.blade.php.
-    Purpose: Renders the perfil.blade view for the Perfil.Blade module.
-    Expected variables within this template: $message.
-    No additional partials are included within this file.
-    All markup below follows Tablar styling conventions for visual consistency.
---}}
-<!-- resources/views/perfil.blade.php -->
-
 @extends('tablar::page')
 
-@section('title', 'Perfil')
+@section('title', 'Editar perfil')
 
 @section('content')
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white text-center">{{ __('Perfil') }}</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{-- Form element sends the captured data to the specified endpoint. --}}
-                    <form method="POST" action="{{ route('perfil.update') }}">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="form-group">
-                            {{-- Label describing the purpose of '{{ __('Nombre de Usuario') }}'. --}}
-                            <label for="name">{{ __('Nombre de Usuario') }}</label>
-                            {{-- Input element used to capture the 'name' value. --}}
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ auth()->user()->name }}" required autofocus>
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            {{-- Label describing the purpose of '{{ __('Correo Electrónico') }}'. --}}
-                            <label for="email">{{ __('Correo Electrónico') }}</label>
-                            {{-- Input element used to capture the 'email' value. --}}
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ auth()->user()->email }}" required>
-                            @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            {{-- Label describing the purpose of '{{ __('Nueva Contraseña') }}'. --}}
-                            <label for="password">{{ __('Nueva Contraseña') }}</label>
-                            {{-- Input element used to capture the 'password' value. --}}
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password">
-                            @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ __('La contraseña debe tener al menos 8 caracteres.') }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            {{-- Label describing the purpose of '{{ __('Confirmar Nueva Contraseña') }}'. --}}
-                            <label for="password-confirm">{{ __('Confirmar Nueva Contraseña') }}</label>
-                            {{-- Input element used to capture the 'password_confirmation' value. --}}
-                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" autocomplete="new-password">
-                        </div>
-
-                        <div class="form-group mt-4">
-                            {{-- Button element of type 'submit' to trigger the intended action. --}}
-                            <button type="submit" class="btn btn-primary btn-block">
-                                {{ __('Actualizar Perfil') }}
-                            </button>
-                        </div>
-                    </form>
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <div class="row g-2 align-items-center">
+                <div class="col">
+                    <div class="page-pretitle">Configuracion personal</div>
+                    <h2 class="page-title">Editar perfil</h2>
+                    <div class="text-muted">Actualiza la informacion de acceso de tu cuenta.</div>
+                </div>
+                <div class="col-12 col-md-auto ms-auto d-print-none">
+                    <div class="btn-list">
+                        <a href="{{ route('perfil.show') }}" class="btn btn-outline-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M15 6l-6 6l6 6" />
+                            </svg>
+                            Volver al perfil
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-8 col-xl-7">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title mb-0">Datos de acceso</h3>
+                        </div>
+
+                        <form method="POST" action="{{ route('perfil.update') }}">
+                            @csrf
+                            @method('PUT')
+
+                            <div class="card-body">
+                                @if (session('status'))
+                                    <div class="alert alert-success" role="alert">
+                                        {{ session('status') }}
+                                    </div>
+                                @endif
+
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Nombre de usuario</label>
+                                    <input
+                                        id="name"
+                                        type="text"
+                                        class="form-control @error('name') is-invalid @enderror"
+                                        name="name"
+                                        value="{{ old('name', auth()->user()->name) }}"
+                                        required
+                                        autofocus
+                                    >
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Correo electronico</label>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        class="form-control @error('email') is-invalid @enderror"
+                                        name="email"
+                                        value="{{ old('email', auth()->user()->email) }}"
+                                        required
+                                    >
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Nueva contrasena</label>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        class="form-control @error('password') is-invalid @enderror"
+                                        name="password"
+                                        autocomplete="new-password"
+                                    >
+                                    <div class="form-hint">Deja este campo vacio si no deseas cambiar la contrasena.</div>
+                                    @error('password')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-0">
+                                    <label for="password-confirm" class="form-label">Confirmar nueva contrasena</label>
+                                    <input
+                                        id="password-confirm"
+                                        type="password"
+                                        class="form-control"
+                                        name="password_confirmation"
+                                        autocomplete="new-password"
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="card-footer bg-transparent mt-auto">
+                                <div class="btn-list justify-content-end">
+                                    <a href="{{ route('perfil.show') }}" class="btn btn-outline-secondary">Cancelar</a>
+                                    <button type="submit" class="btn btn-primary">Actualizar perfil</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

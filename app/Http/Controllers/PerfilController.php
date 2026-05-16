@@ -45,15 +45,19 @@ class PerfilController extends Controller
         }
 
         $displayName = $nameFromAccount !== '' ? $nameFromAccount : __('Usuario');
+        $canEditCredentials = $userRole === 'research_staff';
 
         return view('perfil_show', compact(
+            'user',
+            'userRole',
             'displayName',
             'userCity',
             'userProgram',
             'nameUserRole',
             'userMail',
             'userCard',
-            'userPhone'
+            'userPhone',
+            'canEditCredentials'
         ));
     }
 
