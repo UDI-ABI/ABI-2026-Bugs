@@ -379,7 +379,6 @@
                     <form method="GET" class="row g-3 align-items-end">
                         @if ($isResearchStaff)
                             <input type="hidden" name="report_key" value="{{ $reportFilters['report_key'] }}">
-                            <input type="hidden" name="report_search" value="{{ $reportFilters['report_search'] }}">
                             <input type="hidden" name="report_from" value="{{ $reportFilters['report_from'] }}">
                             <input type="hidden" name="report_to" value="{{ $reportFilters['report_to'] }}">
                             <input type="hidden" name="report_program_id" value="{{ $reportFilters['report_program_id'] }}">
@@ -543,7 +542,7 @@
                             <input type="hidden" name="status_id" value="{{ $selectedStatus }}">
                             <input type="hidden" name="city_program_id" value="{{ $selectedCityProgram }}">
                             <input type="hidden" name="pending_review_due_to_age" value="{{ $pendingReviewDueToAge ? 1 : '' }}">
-                            <div class="col-12 col-md-6 col-lg-3">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <label for="report_key" class="form-label">Que deseas comparar</label>
                                 <select id="report_key" name="report_key" class="form-select">
                                     @foreach ($reportModules as $reportKey => $module)
@@ -552,17 +551,6 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <label for="report_search" class="form-label">Buscar dato</label>
-                                <input
-                                    type="text"
-                                    id="report_search"
-                                    name="report_search"
-                                    class="form-control"
-                                    placeholder="Estado, area, linea, programa, comentario o titulo"
-                                    value="{{ $reportFilters['report_search'] }}"
-                                >
                             </div>
                             <div class="col-12 col-md-4 col-lg-2">
                                 <label for="report_from" class="form-label">Desde</label>
@@ -584,7 +572,7 @@
                                     value="{{ $reportFilters['report_to'] }}"
                                 >
                             </div>
-                            <div class="col-12 col-md-4 col-lg-2">
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <label for="report_program_id" class="form-label">Programa</label>
                                 <select id="report_program_id" name="report_program_id" class="form-select">
                                     <option value="">Todos los programas</option>
@@ -606,7 +594,6 @@
                                             'city_program_id' => $selectedCityProgram,
                                             'pending_review_due_to_age' => $pendingReviewDueToAge ? 1 : null,
                                             'report_key' => $activeReportKey,
-                                            'report_search' => $reportFilters['report_search'],
                                             'report_from' => $reportFilters['report_from'],
                                             'report_to' => $reportFilters['report_to'],
                                             'report_program_id' => $reportFilters['report_program_id'],
@@ -623,7 +610,6 @@
                                             'city_program_id' => $selectedCityProgram,
                                             'pending_review_due_to_age' => $pendingReviewDueToAge ? 1 : null,
                                             'report_key' => $activeReportKey,
-                                            'report_search' => $reportFilters['report_search'],
                                             'report_from' => $reportFilters['report_from'],
                                             'report_to' => $reportFilters['report_to'],
                                             'report_program_id' => $reportFilters['report_program_id'],
@@ -640,12 +626,6 @@
                         <div class="text-muted small">
                             Cada diagrama tiene sus propios controles para cambiar entre dona, barras verticales y barras horizontales.
                         </div>
-
-                        @if (! empty($reportFilters['report_search']))
-                            <div class="alert alert-secondary mb-0">
-                                Busqueda aplicada: <strong>{{ $reportFilters['report_search'] }}</strong>
-                            </div>
-                        @endif
 
                         <div class="project-report-grid">
                             @forelse ($reportInsights as $insight)
