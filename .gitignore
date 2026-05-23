@@ -7,6 +7,7 @@
 /storage/*.key
 /vendor
 .env
+.env.railway
 .env.backup
 .env.production
 Homestead.json

@@ -61,8 +61,7 @@ Route::middleware(['auth', 'role:research_staff'])->group(function () {
 
     // Profile (edición solo personal de investigaciones)
     
-    //  Added routes for Departments and Cities (new addition)
-    // These were added to manage departments and their related cities
+    Route::get('departments-cities', [DepartmentController::class, 'unifiedIndex'])->name('departments-cities.index');
     Route::resource('departments', DepartmentController::class);
     Route::resource('cities', CityController::class);
     Route::resource('city-program', CityProgramController::class);
@@ -123,6 +122,7 @@ Route::middleware(['auth', 'role:research_staff'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     // Perfil (vista de solo lectura para cualquier usuario autenticado)
     Route::get('/perfil', [PerfilController::class, 'show'])->name('perfil.show');
+    Route::get('/perfil/foto', [PerfilController::class, 'showPhoto'])->name('perfil.photo.show');
     Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.edit');
     Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
     Route::put('/perfil/foto', [PerfilController::class, 'updatePhoto'])->name('perfil.photo.update');
