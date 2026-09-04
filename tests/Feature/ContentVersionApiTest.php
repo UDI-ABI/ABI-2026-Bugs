@@ -9,15 +9,19 @@ use App\Models\ProjectStatus;
 use App\Models\ResearchGroup;
 use App\Models\InvestigationLine;
 use App\Models\ThematicArea;
+use App\Models\User;
 use App\Models\Version;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 /**
- * The version/content-version history is read-only: /api/content-versions
- * only exposes index/show (see routes/api.php). Content values are written
- * internally by ProjectController/ProjectEvaluationController when a
- * version is created, never through this public API.
+ * The version/content-version history is read-only and requires an
+ * authenticated research_staff session: these routes live in
+ * routes/web.php (under auth + role:research_staff) at
+ * /api/content-versions, only exposing index/show. Content values are
+ * written internally by ProjectController/ProjectEvaluationController
+ * when a version is created, never through this API.
  */
 class ContentVersionApiTest extends TestCase
 {
@@ -26,8 +30,9 @@ class ContentVersionApiTest extends TestCase
     public function test_cannot_store_content_version_through_the_api(): void
     {
         [$content, $version] = $this->createContentAndVersion();
+        $user = $this->createAuthUser();
 
-        $response = $this->postJson('/api/content-versions', [
+        $response = $this->actingAs($user)->postJson('/api/content-versions', [
             'content_id' => $content->id,
             'version_id' => $version->id,
             'value' => 'Valor diligenciado',
@@ -44,6 +49,7 @@ class ContentVersionApiTest extends TestCase
     public function test_can_list_and_show_content_versions(): void
     {
         [$content, $version] = $this->createContentAndVersion();
+        $user = $this->createAuthUser();
 
         $contentVersion = ContentVersion::create([
             'content_id' => $content->id,
@@ -51,13 +57,29 @@ class ContentVersionApiTest extends TestCase
             'value' => 'Valor diligenciado',
         ]);
 
-        $this->getJson('/api/content-versions')
+        $this->actingAs($user)->getJson('/api/content-versions')
             ->assertStatus(200)
             ->assertJsonFragment(['value' => 'Valor diligenciado']);
 
-        $this->getJson("/api/content-versions/{$contentVersion->id}")
+        $this->actingAs($user)->getJson("/api/content-versions/{$contentVersion->id}")
             ->assertStatus(200)
             ->assertJsonFragment(['value' => 'Valor diligenciado']);
+    }
+
+    public function test_requires_authentication(): void
+    {
+        $response = $this->getJson('/api/content-versions');
+
+        $response->assertStatus(401);
+    }
+
+    private function createAuthUser(): User
+    {
+        return User::create([
+            'email' => 'staff@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'research_staff',
+        ]);
     }
 
     private function createContentAndVersion(): array

@@ -12,9 +12,11 @@ use Illuminate\Support\Facades\Hash;
 /**
  * Test for VersionController.
  *
- * The version history is read-only: /api/versions only exposes index/show
- * (see routes/api.php). There is no store/update/destroy/restore anymore,
- * so a version can never be created, edited or deleted through this API.
+ * The version history is read-only and requires an authenticated
+ * research_staff session: these routes live in routes/web.php (under
+ * auth + role:research_staff) at /api/versions, only exposing index/show.
+ * There is no store/update/destroy/restore anymore, so a version can
+ * never be created, edited or deleted through this API.
  */
 class VersionControllerTest extends TestCase
 {
@@ -42,7 +44,7 @@ class VersionControllerTest extends TestCase
             'project_id' => $this->project->id,
         ]);
 
-        $response = $this->actingAs($user)->getJson(route('versions.index'));
+        $response = $this->actingAs($user)->getJson(route('api.versions.index'));
 
         $response->assertStatus(200);
         $response->assertJsonStructure(['data']);
@@ -53,7 +55,7 @@ class VersionControllerTest extends TestCase
     {
         $user = $this->createAuthUser();
 
-        $response = $this->actingAs($user)->getJson(route('versions.index', ['project_id' => $this->project->id]));
+        $response = $this->actingAs($user)->getJson(route('api.versions.index', ['project_id' => $this->project->id]));
 
         $response->assertStatus(200);
     }
@@ -66,7 +68,7 @@ class VersionControllerTest extends TestCase
             'project_id' => $this->project->id,
         ]);
 
-        $response = $this->actingAs($user)->getJson(route('versions.show', $version));
+        $response = $this->actingAs($user)->getJson(route('api.versions.show', $version));
 
         $response->assertStatus(200);
         $response->assertJsonStructure(['id', 'project_id']);
@@ -111,6 +113,14 @@ class VersionControllerTest extends TestCase
 
         $response->assertStatus(405);
         $this->assertDatabaseHas('versions', ['id' => $version->id]);
+    }
+
+    /** @test */
+    public function test_requires_authentication()
+    {
+        $response = $this->getJson('/api/versions');
+
+        $response->assertStatus(401);
     }
 
     private function createAuthUser(): ResearchStaffUser

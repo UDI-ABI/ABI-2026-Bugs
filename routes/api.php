@@ -3,13 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContentController;
-use App\Http\Controllers\ContentVersionController;
 use App\Http\Controllers\InvestigationLineController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ResearchGroupController;
 use App\Http\Controllers\ThematicAreaController;
-use App\Http\Controllers\VersionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,14 +30,9 @@ Route::name('api.')->group(function () {
     Route::apiResource('investigation-lines', InvestigationLineController::class);
     Route::apiResource('thematic-areas', ThematicAreaController::class);
     Route::apiResource('contents', ContentController::class);
-    // El historico de versiones es inmutable: solo lectura, nunca se crea/edita/borra por esta API.
-    // Nota: index/show siguen sin exigir sesion iniciada porque este grupo 'api' no arranca
-    // sesion/cookies (ver Kernel::$middlewareGroups['api']), asi que 'auth' aqui rompería
-    // las paginas versions/* y content-versions/* que hoy leen via fetch() con la cookie del
-    // navegador. Protegerlas requiere habilitar Sanctum stateful (o mover estas rutas a 'web')
-    // como cambio aparte; por ahora solo se cerro la escritura, que era el riesgo real.
-    Route::apiResource('versions', VersionController::class)->only(['index', 'show']);
-    Route::apiResource('content-versions', ContentVersionController::class)->only(['index', 'show']);
+    // El historico de versiones (versions / content-versions) vive en routes/web.php,
+    // dentro del grupo auth+role:research_staff, porque necesita sesion iniciada para
+    // exigir login en la lectura y este grupo 'api' no arranca sesion/cookies.
     Route::get('projects/meta', [ProjectController::class, 'meta'])->name('projects.meta');
     Route::post('projects/{project}/restore', [ProjectController::class, 'restore'])->name('projects.restore');
     Route::apiResource('projects', ProjectController::class);
