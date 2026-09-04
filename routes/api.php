@@ -32,8 +32,14 @@ Route::name('api.')->group(function () {
     Route::apiResource('investigation-lines', InvestigationLineController::class);
     Route::apiResource('thematic-areas', ThematicAreaController::class);
     Route::apiResource('contents', ContentController::class);
-    Route::apiResource('versions', VersionController::class);
-    Route::apiResource('content-versions', ContentVersionController::class);
+    // El historico de versiones es inmutable: solo lectura, nunca se crea/edita/borra por esta API.
+    // Nota: index/show siguen sin exigir sesion iniciada porque este grupo 'api' no arranca
+    // sesion/cookies (ver Kernel::$middlewareGroups['api']), asi que 'auth' aqui rompería
+    // las paginas versions/* y content-versions/* que hoy leen via fetch() con la cookie del
+    // navegador. Protegerlas requiere habilitar Sanctum stateful (o mover estas rutas a 'web')
+    // como cambio aparte; por ahora solo se cerro la escritura, que era el riesgo real.
+    Route::apiResource('versions', VersionController::class)->only(['index', 'show']);
+    Route::apiResource('content-versions', ContentVersionController::class)->only(['index', 'show']);
     Route::get('projects/meta', [ProjectController::class, 'meta'])->name('projects.meta');
     Route::post('projects/{project}/restore', [ProjectController::class, 'restore'])->name('projects.restore');
     Route::apiResource('projects', ProjectController::class);

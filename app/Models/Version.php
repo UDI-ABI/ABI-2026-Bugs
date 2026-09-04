@@ -7,16 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * version table model, manages communication with the database using the root user,
  * should not be used by any end user,
  * always use an inherited model with the connection specific to each role.
+ *
+ * El historico de versiones es inmutable: no tiene soft delete a proposito,
+ * un registro de historial nunca se edita ni se elimina.
  */
 class Version extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.

@@ -30,9 +30,9 @@
             <div class="card-body">
                 <dl class="row g-3 mb-0">
 
-                    {{-- Project title --}}
+                    {{-- Project title (kept blank if this old version never saved its own snapshot) --}}
                     <dt class="col-sm-4">Titulo</dt>
-                    <dd class="col-sm-8">{{ $snapshot['title'] ?? $project->title }}</dd>
+                    <dd class="col-sm-8">{{ $snapshot['title'] ?? 'No disponible para esta version' }}</dd>
 
                     {{-- Project status --}}
                     <dt class="col-sm-4">Estado</dt>
