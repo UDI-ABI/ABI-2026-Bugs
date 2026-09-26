@@ -55,7 +55,8 @@ class NotificationService
             $config['subject'],
             $config['view'],
             $config['content'] ?? [],
-            $config['attachments'] ?? []
+            $config['attachments'] ?? [],
+            $config['sender'] ?? null
         );
     }
 }

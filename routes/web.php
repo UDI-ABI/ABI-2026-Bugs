@@ -18,6 +18,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectEvaluationController;
 use App\Http\Controllers\ProjectVersionController;
+use App\Http\Controllers\VersionController;
+use App\Http\Controllers\ContentVersionController;
 use App\Http\Controllers\BankApprovedIdeasForStudentsController;
 use App\Http\Controllers\BankApprovedIdeasForProfessorsController;
 use App\Http\Controllers\CityProgramController;
@@ -110,6 +112,15 @@ Route::middleware(['auth', 'role:research_staff'])->group(function () {
     Route::get('content-versions/{contentVersionId}', function (int $contentVersionId) {
         return view('content-versions.show', ['contentVersionId' => $contentVersionId]);
     })->name('content-versions.show');
+
+    // JSON usado por las paginas versions/* y content-versions/* de arriba (fetch() con la
+    // cookie de sesion). Vive aqui, bajo 'web' + auth + role:research_staff, en vez de en
+    // routes/api.php, porque el grupo 'api' no arranca sesion y por eso no puede exigir login.
+    // El historico es de solo lectura: no hay store/update/destroy/restore.
+    Route::prefix('api')->name('api.')->group(function () {
+        Route::apiResource('versions', VersionController::class)->only(['index', 'show']);
+        Route::apiResource('content-versions', ContentVersionController::class)->only(['index', 'show']);
+    });
 
     // Public routes for departments and cities (if you need them without authentication)
     Route::get('/obtener-ciudades-por-departamento/{id}', [DepartmentController::class, 'ciudadesPorDepartamento'])->name('obtener-ciudades-por-departamento');

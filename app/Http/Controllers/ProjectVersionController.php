@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\AuthUserHelper;
-use App\Models\Professor;
 use App\Models\Project;
-use App\Models\Student;
 use App\Models\User;
 use App\Models\Version;
 use Illuminate\View\View;
@@ -141,7 +139,17 @@ class ProjectVersionController extends Controller
     }
 
     /**
-     * Build a compatible snapshot for legacy and new versions.
+     * Build a snapshot for legacy versions that were created before the
+     * project started saving a full snapshot on every change.
+     *
+     * Only "contents" can be reconstructed reliably here, because that is
+     * the one section actually versioned per-record in content_version. The
+     * rest of the project state (status, thematic area, frameworks,
+     * participants) at the time of this old version was never stored
+     * anywhere, so it must NOT be filled in with the project's current
+     * data: doing that would silently show today's state as if it were
+     * history. Those sections are left empty/null on purpose; the views
+     * already render that as "Sin estado" / "No definida" / etc.
      */
     protected function resolveSnapshot(Project $project, Version $version): array
     {
@@ -154,19 +162,19 @@ class ProjectVersionController extends Controller
             : $version->contentVersions()->with('content')->get();
 
         return [
-            'title' => $project->title,
-            'evaluation_criteria' => $project->evaluation_criteria,
+            'title' => null,
+            'evaluation_criteria' => null,
             'project_status' => [
-                'id' => $project->projectStatus?->id,
-                'name' => $project->projectStatus?->name,
+                'id' => null,
+                'name' => null,
             ],
             'thematic_area' => [
-                'id' => $project->thematicArea?->id,
-                'name' => $project->thematicArea?->name,
+                'id' => null,
+                'name' => null,
             ],
             'investigation_line' => [
-                'id' => $project->thematicArea?->investigationLine?->id,
-                'name' => $project->thematicArea?->investigationLine?->name,
+                'id' => null,
+                'name' => null,
             ],
             'contents' => $contents
                 ->filter(static fn ($contentVersion) => $contentVersion->content !== null)
@@ -174,40 +182,10 @@ class ProjectVersionController extends Controller
                     return [$this->contentDisplayName($contentVersion->content->name) => $contentVersion->value];
                 })
                 ->toArray(),
-            'frameworks' => $project->contentFrameworks
-                ->map(function ($contentFramework) {
-                    return [
-                        'id' => $contentFramework->id,
-                        'name' => $contentFramework->name,
-                        'framework' => [
-                            'id' => $contentFramework->framework?->id,
-                            'name' => $contentFramework->framework?->name,
-                        ],
-                    ];
-                })
-                ->values()
-                ->all(),
+            'frameworks' => [],
             'participants' => [
-                'professors' => $project->professors
-                    ->map(function (Professor $professor) {
-                        return [
-                            'id' => $professor->id,
-                            'name' => trim(($professor->name ?? '') . ' ' . ($professor->last_name ?? '')),
-                            'email' => $professor->mail ?? $professor->user?->email,
-                        ];
-                    })
-                    ->values()
-                    ->all(),
-                'students' => $project->students
-                    ->map(function (Student $student) {
-                        return [
-                            'id' => $student->id,
-                            'name' => trim(($student->name ?? '') . ' ' . ($student->last_name ?? '')),
-                            'card_id' => $student->card_id,
-                        ];
-                    })
-                    ->values()
-                    ->all(),
+                'professors' => [],
+                'students' => [],
             ],
         ];
     }

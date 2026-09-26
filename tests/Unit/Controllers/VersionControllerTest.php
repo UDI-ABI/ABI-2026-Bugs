@@ -9,6 +9,15 @@ use App\Models\ResearchStaff\ResearchStaffProject;
 use App\Models\ResearchStaff\ResearchStaffUser;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Test for VersionController.
+ *
+ * The version history is read-only and requires an authenticated
+ * research_staff session: these routes live in routes/web.php (under
+ * auth + role:research_staff) at /api/versions, only exposing index/show.
+ * There is no store/update/destroy/restore anymore, so a version can
+ * never be created, edited or deleted through this API.
+ */
 class VersionControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -33,10 +42,9 @@ class VersionControllerTest extends TestCase
         $user = $this->createAuthUser();
         ResearchStaffVersion::create([
             'project_id' => $this->project->id,
-            'name' => 'Versión 1.0'
         ]);
 
-        $response = $this->actingAs($user)->getJson(route('versions.index'));
+        $response = $this->actingAs($user)->getJson(route('api.versions.index'));
 
         $response->assertStatus(200);
         $response->assertJsonStructure(['data']);
@@ -47,24 +55,9 @@ class VersionControllerTest extends TestCase
     {
         $user = $this->createAuthUser();
 
-        $response = $this->actingAs($user)->getJson(route('versions.index', ['project_id' => $this->project->id]));
+        $response = $this->actingAs($user)->getJson(route('api.versions.index', ['project_id' => $this->project->id]));
 
         $response->assertStatus(200);
-    }
-
-    /** @test */
-    public function test_can_create_version()
-    {
-        $user = $this->createAuthUser();
-        $data = [
-            'project_id' => $this->project->id,
-            'name' => 'Nueva Versión'
-        ];
-
-        $response = $this->actingAs($user)->postJson(route('versions.store'), $data);
-
-        $response->assertStatus(201);
-        $this->assertDatabaseHas('versions', ['name' => 'Nueva Versión']);
     }
 
     /** @test */
@@ -73,90 +66,59 @@ class VersionControllerTest extends TestCase
         $user = $this->createAuthUser();
         $version = ResearchStaffVersion::create([
             'project_id' => $this->project->id,
-            'name' => 'Versión Test'
         ]);
 
-        $response = $this->actingAs($user)->getJson(route('versions.show', $version));
+        $response = $this->actingAs($user)->getJson(route('api.versions.show', $version));
 
         $response->assertStatus(200);
-        $response->assertJsonStructure(['id', 'name', 'project_id']);
+        $response->assertJsonStructure(['id', 'project_id']);
     }
 
     /** @test */
-    public function test_can_update_version()
+    public function test_cannot_create_version_through_the_api()
+    {
+        $user = $this->createAuthUser();
+
+        $response = $this->actingAs($user)->postJson('/api/versions', [
+            'project_id' => $this->project->id,
+        ]);
+
+        $response->assertStatus(405);
+    }
+
+    /** @test */
+    public function test_cannot_update_version_through_the_api()
     {
         $user = $this->createAuthUser();
         $version = ResearchStaffVersion::create([
             'project_id' => $this->project->id,
-            'name' => 'Versión Original'
         ]);
 
-        $data = [
+        $response = $this->actingAs($user)->putJson("/api/versions/{$version->id}", [
             'project_id' => $this->project->id,
-            'name' => 'Versión Actualizada'
-        ];
+        ]);
 
-        $response = $this->actingAs($user)->putJson(route('versions.update', $version), $data);
-
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('versions', ['name' => 'Versión Actualizada']);
+        $response->assertStatus(405);
     }
 
     /** @test */
-    public function test_can_soft_delete_version()
+    public function test_cannot_delete_version_through_the_api()
     {
         $user = $this->createAuthUser();
         $version = ResearchStaffVersion::create([
             'project_id' => $this->project->id,
-            'name' => 'Versión Test'
         ]);
 
-        $response = $this->actingAs($user)->deleteJson(route('versions.destroy', $version));
+        $response = $this->actingAs($user)->deleteJson("/api/versions/{$version->id}");
 
-        $response->assertStatus(204);
-        $this->assertSoftDeleted('versions', ['id' => $version->id]);
-    }
-
-    /** @test */
-    public function test_cannot_update_deleted_version()
-    {
-        $user = $this->createAuthUser();
-        $version = ResearchStaffVersion::create([
-            'project_id' => $this->project->id,
-            'name' => 'Versión Test'
-        ]);
-        $version->delete();
-
-        $data = [
-            'project_id' => $this->project->id,
-            'name' => 'Versión Actualizada'
-        ];
-
-        $response = $this->actingAs($user)->putJson(route('versions.update', $version->id), $data);
-
-        $response->assertStatus(404);
-    }
-
-    /** @test */
-    public function test_can_restore_deleted_version()
-    {
-        $user = $this->createAuthUser();
-        $version = ResearchStaffVersion::create([
-            'project_id' => $this->project->id,
-            'name' => 'Versión Test'
-        ]);
-        $version->delete();
-
-        $response = $this->actingAs($user)->postJson(route('versions.restore', $version->id));
-
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('versions', ['id' => $version->id, 'deleted_at' => null]);
+        $response->assertStatus(405);
+        $this->assertDatabaseHas('versions', ['id' => $version->id]);
     }
 
     /** @test */
     public function test_requires_authentication()
     {
-        $response = $this->getJson(route('versions.index'));
+        $response = $this->getJson('/api/versions');
 
         $response->assertStatus(401);
     }
